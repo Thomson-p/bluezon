@@ -119,22 +119,7 @@
         }
 
         /* --- BUTTONS --- */
-/* --- 1. CONTINUOUS IDLE PULSE KEYFRAMES --- */
-@keyframes glassPulse {
-    0% {
-        /* Subtle starting ambient glow */
-        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5), 0 0 15px rgba(6, 182, 212, 0.15);
-    }
-    50% {
-        /* Glow expands outward softly, breathing like real glass-neon */
-        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5), 0 0 30px rgba(6, 182, 212, 0.35);
-    }
-    100% {
-        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5), 0 0 15px rgba(6, 182, 212, 0.15);
-    }
-}
-
-/* --- 2. BUTTON BASE STYLES --- */
+/* --- 1. GLASS BUTTON STYLES --- */
 .btn-glow, .btn-pricing {
     position: relative; 
     overflow: hidden; 
@@ -148,47 +133,70 @@
     text-decoration: none !important; 
     display: inline-block; 
     text-align: center;
-    
-    /* CRITICAL FIX: Applies the infinite, smooth pulse animation while idle */
-    animation: glassPulse 3s ease-in-out infinite;
-    /* Smoothly handles the handoff when switching from animation to hover states */
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-                background-color 0.4s ease, 
-                border-color 0.4s ease, 
-                box-shadow 0.4s ease;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5); 
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                background-color 0.25s ease, 
+                border-color 0.25s ease, 
+                box-shadow 0.25s ease;
 }
 
-/* --- 3. HOVER OVERRIDE --- */
 .btn-glow:hover, .btn-pricing:hover {
-    /* Pauses or overrides the pulse with a sharp, high-intensity float glow */
-    animation: none; 
-    background: rgba(255, 255, 255, 0.12); 
-    border-color: rgba(255, 255, 255, 0.45); 
-    box-shadow: 0 0 35px rgba(6, 182, 212, 0.5), 0 20px 40px rgba(2, 6, 23, 0.6); 
-    transform: translateY(-5px); 
+    background: rgba(255, 255, 255, 0.14); 
+    border-color: rgba(6, 182, 212, 0.7);   
+    box-shadow: 0 0 45px 5px rgba(6, 182, 212, 0.65), 0 20px 40px rgba(2, 6, 23, 0.7); 
+    transform: translateY(-4px); 
     color: white;
     text-decoration: none !important; 
 }
 
-/* --- 4. SWEEPING SHINE REFLEX --- */
+/* --- 2. DIAGONAL AUTOMATIC SHINE KEYFRAMES --- */
+@keyframes glassShine {
+    0% {
+        /* Starts completely clear of the left side */
+        left: -150%;
+    }
+    20% {
+        /* Sweeps across quickly to the right */
+        left: 150%; 
+    }
+    100% {
+        /* Holds its position out of view for the rest of the timer loop */
+        left: 150%; 
+    }
+}
+
+/* --- 3. TILTED DIAGONAL SHINE ELEMENT --- */
 .btn-glow::before, .btn-pricing::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
+    left: -150%;
+    /* Extra wide width keeps the tilted edges from getting clipped at the top/bottom */
+    width: 200%;
     height: 100%;
+    
+    /* CRITICAL FIX: The skewX(-25deg) tilts the glare line sharply to the right */
+    transform: skewX(-25deg);
+    
+    /* Sleek gradient with a sharp bright white core and soft fading edges */
     background: linear-gradient(
         90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent
+        transparent 0%, 
+        rgba(255, 255, 255, 0.05) 40%, 
+        rgba(255, 255, 255, 0.45) 50%, 
+        rgba(255, 255, 255, 0.05) 60%, 
+        transparent 100%
     );
-    transition: all 0.6s ease;
+    
+    /* CRITICAL FIX: Runs the flash loop frequently every 3 seconds */
+    animation: glassShine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+/* Resets instantly on hover to provide immediate interactive feedback */
 .btn-glow:hover::before, .btn-pricing:hover::before {
-    left: 100%; 
+    animation: none; 
+    left: 150%;
+    transition: left 0.45s ease-out; 
 }
 
 /* Fixes text layering over animations */
@@ -200,6 +208,7 @@
 /* Original structural sizing */
 .btn-pricing { width: 100%; margin-top: 1rem; padding: 14px; box-sizing: border-box; } 
 .btn-glow { padding: 15px 40px; }
+
 
 
 
