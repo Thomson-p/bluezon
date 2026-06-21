@@ -143,7 +143,7 @@
 .btn-glow:hover, .btn-pricing:hover {
     background: rgba(255, 255, 255, 0.14); 
     border-color: rgba(6, 182, 212, 0.7);   
-    box-shadow: 0 0 45px 5px rgba(6, 182, 212, 0.65), 0 20px 40px rgba(2, 6, 23, 0.7); 
+    box-shadow: 0 0 20px 5px rgba(6, 182, 212, 0.65), 0 20px 40px rgba(2, 6, 23, 0.7); 
     transform: translateY(-4px); 
     color: white;
     text-decoration: none !important; 
@@ -152,15 +152,15 @@
 /* --- 2. DIAGONAL AUTOMATIC SHINE KEYFRAMES --- */
 @keyframes glassShine {
     0% {
-        /* Starts completely clear of the left side */
         left: -150%;
     }
-    20% {
-        /* Sweeps across quickly to the right */
+    /* CRITICAL FIX: Changed from 20% to 50%. 
+       The flare now takes half of the 3-second loop (1.5 seconds) to slowly cross the button. */
+    50% {
         left: 150%; 
     }
+    /* Stays hidden on the right side for the remaining 1.5 seconds before restarting */
     100% {
-        /* Holds its position out of view for the rest of the timer loop */
         left: 150%; 
     }
 }
@@ -171,14 +171,10 @@
     position: absolute;
     top: 0;
     left: -150%;
-    /* Extra wide width keeps the tilted edges from getting clipped at the top/bottom */
     width: 200%;
     height: 100%;
-    
-    /* CRITICAL FIX: The skewX(-25deg) tilts the glare line sharply to the right */
     transform: skewX(-25deg);
     
-    /* Sleek gradient with a sharp bright white core and soft fading edges */
     background: linear-gradient(
         90deg, 
         transparent 0%, 
@@ -188,15 +184,15 @@
         transparent 100%
     );
     
-    /* CRITICAL FIX: Runs the flash loop frequently every 3 seconds */
-    animation: glassShine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    /* Maintains the 3-second interval cycle but executes the animation linearly for a smooth drag */
+    animation: glassShine 3s linear infinite;
 }
 
-/* Resets instantly on hover to provide immediate interactive feedback */
+/* Fast manual hover sweep override */
 .btn-glow:hover::before, .btn-pricing:hover::before {
     animation: none; 
     left: 150%;
-    transition: left 0.45s ease-out; 
+    transition: left 0.5s ease-out; 
 }
 
 /* Fixes text layering over animations */
@@ -208,6 +204,7 @@
 /* Original structural sizing */
 .btn-pricing { width: 100%; margin-top: 1rem; padding: 14px; box-sizing: border-box; } 
 .btn-glow { padding: 15px 40px; }
+
 
 
 
